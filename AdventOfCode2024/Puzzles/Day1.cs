@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode2024.Puzzles
 {
+    //Placeholder for day1, this is just a copy of day1 from 2023 for now
     internal class Day1 : Puzzle
     {
         private List<string> calDoc = [];
