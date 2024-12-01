@@ -6,101 +6,56 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode2024.Puzzles
 {
-    //Placeholder for day1, this is just a copy of day1 from 2023 for now
+    /// <summary>
+    /// --- Day 1: Historian Hysteria ---
+    /// </summary>
+    /// <see cref="https://adventofcode.com/2024/day/1"/>
     internal class Day1 : Puzzle
     {
-        private List<string> calDoc = [];
-        private List<List<int>> calValues = [];
-        private List<int> calNums = [];
+        private List<int> list1 = [];
+        private List<int> list2 = [];
+        private List<int> distances = [];
+        private List<int> scores = [];
 
         public Day1()
-            : base(Name: "Trebuchet", DayNumber: 1) { }
+            : base(Name: "Historian Hysteria", DayNumber: 1) { }
 
         public override void ParseData()
         {
-            calDoc = DataRaw.ToLines();
-            calValues = [];
-            foreach (var line in calDoc)
-            {
-                calValues.Add(line.Where(c => char.IsDigit(c)).Select(c => int.Parse(c.ToString())).ToList());
-            }
+            list1.Clear();
+            list2.Clear();
+            distances.Clear();
+            scores.Clear();
 
+            foreach (var line in DataRaw.Split("\r\n"))
+            {
+                var nums = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                list1.Add(int.Parse(nums[0]));
+                list2.Add(int.Parse(nums[1]));
+            }
         }
 
-        public override void Part1(bool TestMode)
+        public override void Part1()
         {
-            LoadData(isTestMode: TestMode, partNum: 1);
             ParseData();
-            int sum = SumCalNums();
 
-            Part1Result = $"Sum = {sum}";
+            list1 = [.. list1.OrderBy(n => n)];
+            list2 = [.. list2.OrderBy(n => n)];
+
+            for (int i = 0; i < list1.Count; i++)
+                distances.Add(Math.Abs(list1[i] - list2[i]));
+
+            Part1Result = $"Distance = {distances.Sum()}";
         }
 
-        private int SumCalNums()
+        public override void Part2()
         {
-            calNums = [];
-            foreach (var nums in calValues)
-            {
-                var firstNum = nums.First();
-                var lastNum = nums.Last();
-
-                calNums.Add(int.Parse($"{firstNum}{lastNum}"));
-            }
-
-            var sum = calNums.Sum();
-            return sum;
-        }
-
-        public override void Part2(bool TestMode)
-        {
-            LoadData(isTestMode: TestMode, partNum: 2);
-            DataRaw = DataRaw.WordsToNums();
             ParseData();
-            int sum = SumCalNums();
 
-            Part2Result = $"Sum = {sum}";
-        }
-    }
+            for (int i = 0; i < list1.Count; i++)
+                scores.Add(list1[i] * list2.Where(n => n == list1[i]).Count());
 
-    internal static class Day1Extensions
-    {
-        public static string WordsToNums(this string data)
-        {
-            string result = "";
-
-            var dict = new Dictionary<string, string>
-            {
-                { "one", "1" },
-                { "two", "2" },
-                { "three", "3"},
-                { "four", "4" },
-                { "five", "5" },
-                { "six", "6" },
-                { "seven", "7" },
-                { "eight", "8"},
-                { "nine", "9" },
-                { "zero", "0" }
-            };
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                var line = data.Substring(i, data.Length - i);
-                if (line[0] == '\n')
-                    result += "\n";
-                else if (char.IsDigit(line[0]))
-                    result += line[0];
-                else
-                    foreach (var item in dict)
-                    {
-                        if (line.StartsWith(item.Key))
-                        {
-                            result += item.Value;
-                            break;
-                        }
-                    }
-            }
-
-            return result;
+            Part2Result = $"Similarity = {scores.Sum()}";
         }
     }
 }

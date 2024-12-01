@@ -12,8 +12,8 @@ namespace AdventOfCode2024.Puzzles
         double DayNumber { get; }
         public void Run();
         public void ShowPuzzleText(int partNum);
-        public void Part1(bool TestMode);
-        public void Part2(bool TestMode);
+        public void Part1();
+        public void Part2();
 
     }
 }

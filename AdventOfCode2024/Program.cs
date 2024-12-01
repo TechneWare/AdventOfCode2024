@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Diagnostics;
+using System.Windows.Input;
 using AdventOfCode2024.Commands;
 using ICommand = AdventOfCode2024.Commands.ICommand;
 
@@ -14,7 +15,7 @@ namespace AdventOfCode2024
             parser.ParseCommand(new string[] { "Cls" }).Run();
             parser.ParseCommand(new string[] { "Welcome" }).Run();
 
-            Settings.ShowPuzzleText = true;
+            Settings.ShowPuzzleText = !Debugger.IsAttached;
             parser.ParseCommand(new string[] { "RunPuzzle", "Last" }).Run();
             Settings.ShowPuzzleText = false;
 

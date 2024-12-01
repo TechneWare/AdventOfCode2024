@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Spectre.Console;
+using System.Diagnostics;
 
 namespace AdventOfCode2024.Puzzles
 {
@@ -33,46 +35,57 @@ namespace AdventOfCode2024.Puzzles
         }
         public void Run()
         {
-            DisplayHeading();
+            var stopwatch = new Stopwatch();
+            var table = Settings.ShowPuzzleText
+                ? GetPartTable()
+                : GetFullDayTable();
 
             if (Settings.ShowPuzzleText)
                 ShowPuzzleText(partNum: 1);
+
             foreach (var mode in new bool[] { true, false })
             {
                 WithLogging = Settings.ShowLog && mode;
 
-                var start = DateTime.Now;
-                Part1(mode);
-                var duration = (DateTime.Now - start).TotalSeconds;
-                Console.WriteLine($"{(mode ? "Test" : "Actual"),-7}Day {DayNumber,-4} Part1: {Part1Result,-60}{duration:F8} Seconds");
+                LoadData(isTestMode: mode, partNum: 1);
+
+                stopwatch.Start();
+                Part1();
+                stopwatch.Stop();
+                var duration = 1000 * stopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
+
+                if (Settings.ShowPuzzleText)
+                    AddPartRow(table, Part1Result, mode, duration);
+                else
+                    AddDayRow(table, "1", Part1Result, mode, duration);
             }
 
             if (Settings.ShowPuzzleText)
+            {
+                AnsiConsole.Write(table);
+                table = GetPartTable();
                 ShowPuzzleText(partNum: 2);
+            }
+
+            stopwatch.Reset();
             foreach (var mode in new bool[] { true, false })
             {
                 WithLogging = Settings.ShowLog && mode;
 
-                var start = DateTime.Now;
-                Part2(mode);
-                var duration = (DateTime.Now - start).TotalSeconds;
-                Console.WriteLine($"{(mode ? "Test" : "Actual"),-7}Day {dayNumber,-4} Part2: {Part2Result,-60}{duration:F8} Seconds");
-            }
-        }
+                LoadData(isTestMode: mode, partNum: 2);
 
-        private void DisplayHeading()
-        {
-            var clr = Console.ForegroundColor;
-            var bkc = Console.BackgroundColor;
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.BackgroundColor = ConsoleColor.Blue;
-            var title = $"--- Day {DayNumber} {name} ---";
-            var padding = (Console.WindowWidth / 2) + title.Length / 2;
-            Console.Write($"{title.PadLeft(padding)}");
-            ClearLineFromCursorToEnd();
-            Console.ForegroundColor = clr;
-            Console.BackgroundColor = bkc;
-            Console.WriteLine("\n");
+                stopwatch.Start();
+                Part2();
+                stopwatch.Stop();
+                var duration = 1000 * stopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
+
+                if (Settings.ShowPuzzleText)
+                    AddPartRow(table, Part2Result, mode, duration);
+                else
+                    AddDayRow(table, "2", Part2Result, mode, duration);
+            }
+
+            AnsiConsole.Write(table);
         }
 
         public void LoadData(bool isTestMode, int partNum)
@@ -85,8 +98,8 @@ namespace AdventOfCode2024.Puzzles
         }
 
         public abstract void ParseData();
-        public abstract void Part1(bool TestMode);
-        public abstract void Part2(bool TestMode);
+        public abstract void Part1();
+        public abstract void Part2();
 
         private string GetInputFileName(bool TestMode, int partNum)
         {
@@ -142,7 +155,7 @@ namespace AdventOfCode2024.Puzzles
             int consoleHeight = Console.WindowHeight - 3;
             var bakColor = Console.BackgroundColor;
             var forColor = Console.ForegroundColor;
-            
+
             // Wrap text to fit the console window width
             string wrappedText = WrapText(text, consoleWidth);
 
@@ -179,12 +192,12 @@ namespace AdventOfCode2024.Puzzles
                         Console.WriteLine();
                         if (line == string.Empty)
                         {
-                            Thread.Sleep(charCount * 20);
+                            Thread.Sleep(charCount * 15);
                             charCount = 0;
                         }
                     }
                     else
-                        Console.WriteLine(line, Color.WhiteSmoke);
+                        Console.WriteLine(line, System.Drawing.Color.WhiteSmoke);
                 }
                 Console.ForegroundColor = forColor;
 
@@ -197,7 +210,7 @@ namespace AdventOfCode2024.Puzzles
                     Console.BackgroundColor = bakColor;
                     Console.ForegroundColor = forColor;
 
-                    Console.ReadKey(); // Wait for user input
+                    Console.ReadKey();
 
                     Console.SetCursorPosition(0, Console.CursorTop);
                     for (int i = 0; i < 2; i++)
@@ -245,6 +258,43 @@ namespace AdventOfCode2024.Puzzles
             }
 
             return result.TrimEnd();
+        }
+        private Table GetFullDayTable()
+        {
+            return new Table()
+            .Title($"[bold yellow on blue]--- Day {DayNumber} {name} ---[/]")
+            .AddColumns(
+                "[bold yellow]Part[/]",
+                "[bold yellow]Solve[/]",
+                "[bold yellow]Solution[/]",
+                "[bold yellow]Elapsed time[/]")
+            .RoundedBorder()
+            .BorderColor(Spectre.Console.Color.LightSlateBlue);
+        }
+        private void AddDayRow(Table table, string partNum, string resultValue, bool mode, double duration)
+        {
+            table.AddRow(new Text[] {
+                new Text(partNum).Centered(),
+                new Text($"{(mode ? "Test" : "Actual")}").LeftJustified(),
+                new Text($"{resultValue}").LeftJustified(),
+                new Text($"{duration:F5} ms").RightJustified() });
+        }
+        private Table GetPartTable()
+        {
+            return new Table()
+            .AddColumns(
+                "[bold yellow]Solve[/]",
+                "[bold yellow]Solution[/]",
+                "[bold yellow]Elapsed time[/]")
+            .RoundedBorder()
+            .BorderColor(Spectre.Console.Color.LightSlateBlue);
+        }
+        private void AddPartRow(Table table, string resultValue, bool mode, double duration)
+        {
+            table.AddRow(new Text[] {
+                new Text($"{(mode ? "Test" : "Actual")}").LeftJustified(),
+                new Text($"{resultValue}").LeftJustified(),
+                new Text($"{duration:F5} ms").RightJustified() });
         }
     }
 }
