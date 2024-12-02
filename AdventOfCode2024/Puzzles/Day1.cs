@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AdventOfCode2024.Puzzles
+﻿namespace AdventOfCode2024.Puzzles
 {
     /// <summary>
     /// --- Day 1: Historian Hysteria ---
@@ -14,8 +8,8 @@ namespace AdventOfCode2024.Puzzles
     {
         private List<int> list1 = [];
         private List<int> list2 = [];
-        private List<int> distances = [];
-        private List<int> scores = [];
+        private readonly List<int> distances = [];
+        private readonly List<int> scores = [];
 
         public Day1()
             : base(Name: "Historian Hysteria", DayNumber: 1) { }
@@ -35,7 +29,7 @@ namespace AdventOfCode2024.Puzzles
             }
         }
 
-        public override void Part1()
+        public override void Part1(bool isTestMode)
         {
             ParseData();
 
@@ -48,7 +42,7 @@ namespace AdventOfCode2024.Puzzles
             Part1Result = $"Distance = {distances.Sum()}";
         }
 
-        public override void Part2()
+        public override void Part2(bool isTestMode)
         {
             ParseData();
 

@@ -50,7 +50,7 @@ namespace AdventOfCode2024.Puzzles
                 LoadData(isTestMode: mode, partNum: 1);
 
                 stopwatch.Start();
-                Part1();
+                Part1(mode);
                 stopwatch.Stop();
                 var duration = 1000 * stopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
 
@@ -75,7 +75,7 @@ namespace AdventOfCode2024.Puzzles
                 LoadData(isTestMode: mode, partNum: 2);
 
                 stopwatch.Start();
-                Part2();
+                Part2(mode);
                 stopwatch.Stop();
                 var duration = 1000 * stopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
 
@@ -98,8 +98,8 @@ namespace AdventOfCode2024.Puzzles
         }
 
         public abstract void ParseData();
-        public abstract void Part1();
-        public abstract void Part2();
+        public abstract void Part1(bool isTestMode);
+        public abstract void Part2(bool isTestMode);
 
         private string GetInputFileName(bool TestMode, int partNum)
         {
