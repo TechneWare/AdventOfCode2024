@@ -1,4 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace AdventOfCode2024.Puzzles
 {
@@ -27,12 +32,12 @@ namespace AdventOfCode2024.Puzzles
             var muls = RegExMuls().Matches(validData);
             foreach (var mul in muls.Where(m => m != null))
             {
-                var nums = mul.ToString()
+                var vals = mul.ToString()
                     .Replace("mul(", "")
                     .Replace(")", "")
                     .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-                multipliers.Add((int.Parse(nums[0]), int.Parse(nums[1])));
+                multipliers.Add((int.Parse(vals[0]), int.Parse(vals[1])));
             }
         }
 

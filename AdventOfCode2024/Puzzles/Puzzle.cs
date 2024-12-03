@@ -8,9 +8,12 @@ namespace AdventOfCode2024.Puzzles
     {
         private readonly string name;
         private readonly double dayNumber;
+        private readonly string seeRef;
+
         public bool WithLogging = false;
         public double DayNumber => dayNumber;
         public string Name => name;
+        public string SeeRef => seeRef;
         public string Part1Result { get; set; } = "Not Run";
         public string Part2Result { get; set; } = "Not Run";
 
@@ -20,12 +23,14 @@ namespace AdventOfCode2024.Puzzles
         {
             name = "No Name";
             dayNumber = 0;
+            seeRef = "";
         }
 
         public Puzzle(string Name, double DayNumber)
         {
             name = Name;
             dayNumber = DayNumber;
+            this.seeRef = $@"https://adventofcode.com/2024/day/{DayNumber}";
         }
         public void Run()
         {
@@ -35,7 +40,10 @@ namespace AdventOfCode2024.Puzzles
                 : GetFullDayTable();
 
             if (Settings.ShowPuzzleText)
+            {
+                ShowTitle();
                 ShowPuzzleText(partNum: 1);
+            }
 
             foreach (var mode in new bool[] { true, false })
             {
@@ -134,21 +142,24 @@ namespace AdventOfCode2024.Puzzles
                     WithLogging = false;
             }
         }
+        public void ShowTitle()
+        {
+            AnsiConsole.Markup($"[bold yellow on blue]\n--- Day {dayNumber}: {name} ---[/]\n");
+            AnsiConsole.Markup($"[underline italic dim link={seeRef}]{seeRef}[/]\n");
+        }
         public void ShowPuzzleText(int partNum)
         {
             var fname = GetPuzzleFileName(partNum);
             if (File.Exists(fname))
             {
                 var puzzleText = File.ReadAllText(fname);
-                DisplayWithMoreCommand(puzzleText);
+                DisplayWithMoreCommand("\n" + puzzleText);
             }
         }
         private void DisplayWithMoreCommand(string text)
         {
             int consoleWidth = Console.WindowWidth;
             int consoleHeight = Console.WindowHeight - 3;
-            var bakColor = Console.BackgroundColor;
-            var forColor = Console.ForegroundColor;
 
             // Wrap text to fit the console window width
             string wrappedText = WrapText(text, consoleWidth);
@@ -163,7 +174,6 @@ namespace AdventOfCode2024.Puzzles
             while (currentPage < totalPages)
             {
                 bool slowMode = true;
-                Console.ForegroundColor = ConsoleColor.Green;
                 for (int i = 0; i < consoleHeight && currentPage * consoleHeight + i < lines.Length; i++)
                 {
                     var line = lines[currentPage * consoleHeight + i];
@@ -179,7 +189,14 @@ namespace AdventOfCode2024.Puzzles
                         foreach (var ch in line)
                         {
                             charCount++;
-                            Console.Write(ch);
+
+#pragma warning disable IDE0071 // Simplify interpolation
+                            //ch must be a string before passing to MarkupInterpolated
+                            //Otherwise '[' or ']' will throw an error as an unescaped markup character
+                            //I think it is a bug with AnsiConsole
+                            AnsiConsole.MarkupInterpolated($"[green1]{ch.ToString()}[/]");
+#pragma warning restore IDE0071 // Simplify interpolation
+
                             if (!Console.KeyAvailable)
                                 Thread.Sleep(5);
                         }
@@ -191,19 +208,13 @@ namespace AdventOfCode2024.Puzzles
                         }
                     }
                     else
-                        Console.WriteLine(line, System.Drawing.Color.WhiteSmoke);
+                        AnsiConsole.MarkupInterpolated($"[green1]{line}[/]\n");
                 }
-                Console.ForegroundColor = forColor;
 
                 // Check if there's more content to display
                 if (currentPage < totalPages - 1 && !slowMode)
                 {
-                    Console.BackgroundColor = ConsoleColor.White;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.Write("\nPress any key to see more...");
-                    Console.BackgroundColor = bakColor;
-                    Console.ForegroundColor = forColor;
-
+                    AnsiConsole.Markup("[invert]\nPress any key to see more...[/]");
                     Console.ReadKey();
 
                     Console.SetCursorPosition(0, Console.CursorTop);
@@ -256,7 +267,7 @@ namespace AdventOfCode2024.Puzzles
         private Table GetFullDayTable()
         {
             return new Table()
-            .Title($"[bold yellow on blue]--- Day {DayNumber} {name} ---[/]")
+            .Title($"[bold yellow on blue]--- Day {DayNumber} {name} ---[/]\n[italic dim link={seeRef}]{seeRef}[/]")
             .AddColumns(
                 "[bold yellow]Part[/]",
                 "[bold yellow]Solve[/]",
