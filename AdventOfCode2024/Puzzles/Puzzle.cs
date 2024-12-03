@@ -34,22 +34,59 @@ namespace AdventOfCode2024.Puzzles
         }
         public void Run()
         {
-            var stopwatch = new Stopwatch();
-            var table = Settings.ShowPuzzleText
-                ? GetPartTable()
-                : GetFullDayTable();
-
             if (Settings.ShowPuzzleText)
             {
+                var table = GetPartTable();
                 ShowTitle();
                 ShowPuzzleText(partNum: 1);
+
+                RunPart1(table);
+                AnsiConsole.Write(table);
+
+                table = GetPartTable();
+                ShowPuzzleText(partNum: 2);
+
+                RunPart2(table);
+                AnsiConsole.Write(table);
             }
+            else
+            {
+                var table = GetFullDayTable();
+                AnsiConsole.Progress()
+                .AutoClear(true)
+                .Columns(new ProgressColumn[]
+                {
+                new SpinnerColumn(),
+                new RemainingTimeColumn(),
+                new TaskDescriptionColumn(),
+                new ProgressBarColumn(),
+                new PercentageColumn(),
+                })
+                .Start(ctx =>
+                {
+                    var taskMain = ctx.AddTask($"[green]Executing Day {dayNumber}[/]");
+                    var task1 = ctx.AddTask("[green]Part 1[/]");
+                    var task2 = ctx.AddTask("[green]Part 2[/]");
+
+                    RunPart1(table, taskMain, task1);
+                    RunPart2(table, taskMain, task2);
+                });
+
+                AnsiConsole.Write(table);
+            }
+        }
+
+        private void RunPart1(Table table, ProgressTask? taskMain = null, ProgressTask? task1 = null)
+        {
+            var stopwatch = new Stopwatch();
 
             foreach (var mode in new bool[] { true, false })
             {
                 WithLogging = Settings.ShowLog && mode;
 
                 LoadData(isTestMode: mode, partNum: 1);
+                task1?.Increment(25);
+                taskMain?.Increment(12.5);
 
                 stopwatch.Start();
                 Part1(mode);
@@ -60,21 +97,22 @@ namespace AdventOfCode2024.Puzzles
                     AddPartRow(table, Part1Result, mode, duration);
                 else
                     AddDayRow(table, "1", Part1Result, mode, duration);
-            }
 
-            if (Settings.ShowPuzzleText)
-            {
-                AnsiConsole.Write(table);
-                table = GetPartTable();
-                ShowPuzzleText(partNum: 2);
+                task1?.Increment(25);
+                taskMain?.Increment(12.5);
             }
+        }
+        private void RunPart2(Table table, ProgressTask? taskMain = null, ProgressTask? task1 = null)
+        {
+            var stopwatch = new Stopwatch();
 
-            stopwatch.Reset();
             foreach (var mode in new bool[] { true, false })
             {
                 WithLogging = Settings.ShowLog && mode;
 
                 LoadData(isTestMode: mode, partNum: 2);
+                task1?.Increment(25);
+                taskMain?.Increment(12.5);
 
                 stopwatch.Start();
                 Part2(mode);
@@ -85,9 +123,10 @@ namespace AdventOfCode2024.Puzzles
                     AddPartRow(table, Part2Result, mode, duration);
                 else
                     AddDayRow(table, "2", Part2Result, mode, duration);
-            }
 
-            AnsiConsole.Write(table);
+                task1?.Increment(25);
+                taskMain?.Increment(12.5);
+            }
         }
 
         public void LoadData(bool isTestMode, int partNum)
