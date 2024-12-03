@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Windows.Input;
 using AdventOfCode2024.Commands;
 using ICommand = AdventOfCode2024.Commands.ICommand;
 

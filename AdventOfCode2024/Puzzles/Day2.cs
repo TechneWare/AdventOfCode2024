@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using static AdventOfCode2024.Puzzles.Day2;
-
-namespace AdventOfCode2024.Puzzles
+﻿namespace AdventOfCode2024.Puzzles
 {
     /// <summary>
     /// --- Day 2: Red-Nosed Reports ---

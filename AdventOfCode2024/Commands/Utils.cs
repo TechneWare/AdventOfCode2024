@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AdventOfCode2024.Puzzles;
+﻿using AdventOfCode2024.Puzzles;
 
 namespace AdventOfCode2024.Commands
 {
