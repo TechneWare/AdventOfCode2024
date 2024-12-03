@@ -21,7 +21,7 @@
             distances.Clear();
             scores.Clear();
 
-            foreach (var line in DataRaw.Split("\r\n"))
+            foreach (var line in DataRaw.Replace("\r","").Split("\n"))
             {
                 var nums = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                 list1.Add(int.Parse(nums[0]));

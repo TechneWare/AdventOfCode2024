@@ -26,7 +26,7 @@ namespace AdventOfCode2024.Puzzles
         {
             multipliers.Clear();
 
-            var data = DataRaw.Replace("\r\n", "");
+            var data = DataRaw.Replace("\r", "").Replace("\n", "");
             string validData = GetValidData(data);
 
             var muls = RegExMuls().Matches(validData);

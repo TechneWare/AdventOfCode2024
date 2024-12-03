@@ -14,7 +14,7 @@
         public override void ParseData()
         {
             reports.Clear();
-            foreach (var line in DataRaw.Split("\r\n", StringSplitOptions.RemoveEmptyEntries))
+            foreach (var line in DataRaw.Replace("\r", "").Split("\n", StringSplitOptions.RemoveEmptyEntries))
                 reports.Add(new Report(line));
         }
 
