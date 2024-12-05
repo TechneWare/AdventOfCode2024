@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2024.Commands
+﻿using Spectre.Console;
+
+namespace AdventOfCode2024.Commands
 {
     public class RunPuzzleCommand : ICommand, ICommandFactory
     {
@@ -6,9 +8,12 @@
 
         public string CommandArgs => "[Day Number]";
 
-        public string[] CommandAlternates => new string[] { "day" };
+        public string[] CommandAlternates => ["day", "[#]"];
 
-        public string Description => "Run a Puzzle ([day number] by itself will run that day)";
+        public string Description => "Runs a Puzzle";
+        public string ExtendedDescription => "Runs a Puzzle, EG: 'RunPuzzle 1' will run the first puzzle\n" +
+                                             "'RunPuzzle [daynumber] log' will run a specific puzzle with logging turned on\n" +
+                                             "Simply typing a number will run that days puzzle if found. EG: '5' will run the Day 5 Puzzle.";
 
         public double DayNumber { get; set; } = 0;
         public string arg { get; set; } = "";
@@ -28,16 +33,14 @@
                         if (Utils.GetAllPuzzles().Any())
                             ((RunPuzzleCommand)cmd).DayNumber = (double)Utils.GetAllPuzzles().Max(p => p.DayNumber);
                         else
-                            cmd = new BadCommand("No Puzzles have been created yet, go make one!");
+                            cmd = new BadCommand("No Puzzles have been created yet, go make one!", this);
                 }
                 else
-                    cmd = new BadCommand("Usage: day [Day Number | last]");
-
-
+                    cmd = new BadCommand("Usage: day [Day Number | last]", this);
             }
             catch (Exception)
             {
-                cmd = new BadCommand("Unable to locate any puzzles");
+                cmd = new BadCommand("Unable to locate any puzzles", this);
             }
 
 
@@ -55,10 +58,10 @@
                 if (puzzle != null)
                     puzzle.Run();
                 else
-                    Console.WriteLine($"Unkown Day Number [{DayNumber}], no puzzle for this day was found");
+                    AnsiConsole.MarkupLineInterpolated($"[bold yellow]Unkown Day Number[/] [bold yellow slowblink]{DayNumber}[/] [bold yellow]no puzzle for this day was found[/]");
             }
             else
-                Console.WriteLine($"Invalid Day Number [{arg}], must be 1 or higher");
+                AnsiConsole.MarkupLineInterpolated($"[bold yellow]Invalid Day Number[/] [bold yellow slowblink]{arg}[/] [bold yellow]must be 1 or higher[/]");
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2024.Commands
+﻿using Spectre.Console;
+
+namespace AdventOfCode2024.Commands
 {
     public class QuitCommand : ICommand, ICommandFactory
     {
@@ -6,6 +8,7 @@
         public string CommandArgs => "";
         public string[] CommandAlternates => new string[] { "exit" };
         public string Description => "Ends the program";
+        public string ExtendedDescription => "";
         public bool WithLogging { get; set; } = false;
         public ICommand MakeCommand(string[] args)
         {
@@ -14,7 +17,7 @@
 
         public void Run()
         {
-            Console.WriteLine("--Laterz");
+            AnsiConsole.MarkupLine("[bold yellow]Laterz[/]");
         }
     }
 }

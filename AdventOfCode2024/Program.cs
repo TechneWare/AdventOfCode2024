@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using AdventOfCode2024.Commands;
+using Spectre.Console;
 using ICommand = AdventOfCode2024.Commands.ICommand;
 
 namespace AdventOfCode2024
@@ -11,11 +12,11 @@ namespace AdventOfCode2024
             var availableCommands = Utils.GetAvailableCommands();
             var parser = new CommandParser(availableCommands);
 
-            parser.ParseCommand(new string[] { "Cls" }).Run();
-            parser.ParseCommand(new string[] { "Welcome" }).Run();
+            parser.ParseCommand(["Cls"]).Run();
+            parser.ParseCommand(["Welcome"]).Run();
 
             Settings.ShowPuzzleText = !Debugger.IsAttached;
-            parser.ParseCommand(new string[] { "RunPuzzle", "Last" }).Run();
+            parser.ParseCommand(["RunPuzzle", "Last"]).Run();
             Settings.ShowPuzzleText = false;
 
             ICommand? lastCommand = null;
@@ -24,7 +25,7 @@ namespace AdventOfCode2024
                 args = GetInput().Split(' ');
 
                 if (args.Length == 0 || string.IsNullOrEmpty(args[0]))
-                    Utils.PrintUsage(availableCommands);
+                    AnsiConsole.MarkupLine("[green]Type '[/][bold yellow]HELP[/][green]' to get help with available commands[/]");
                 else
                 {
                     ICommand? command = parser.ParseCommand(args);
@@ -39,9 +40,9 @@ namespace AdventOfCode2024
 
         static string GetInput()
         {
-            Console.WriteLine($"\nLogging: {(Settings.ShowLog ? "On" : "Off")}\t Puzzle Text:{(Settings.ShowPuzzleText ? "On" : "Off")}");
-            Console.Write("$> ");
-            string commandInput = Console.ReadLine();
+            AnsiConsole.MarkupLineInterpolated($"\n[dim italic]Logging:[/] {(Settings.ShowLog ? "On" : "Off")} [dim italic]Puzzle Text:[/]{(Settings.ShowPuzzleText ? "On" : "Off")}");
+            var commandInput = AnsiConsole.Prompt(new TextPrompt<string>("[bold yellow]$>[/] ").AllowEmpty());
+
             return commandInput;
         }
     }

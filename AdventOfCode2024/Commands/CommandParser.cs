@@ -1,13 +1,8 @@
 ﻿namespace AdventOfCode2024.Commands
 {
-    internal class CommandParser
+    internal class CommandParser(IEnumerable<ICommandFactory> commands)
     {
-        private readonly IEnumerable<ICommandFactory> commands;
-
-        public CommandParser(IEnumerable<ICommandFactory> commands)
-        {
-            this.commands = commands;
-        }
+        private readonly IEnumerable<ICommandFactory> commands = commands;
 
         internal ICommand ParseCommand(string[] args)
         {
@@ -19,22 +14,22 @@
 
             if (command is RunPuzzleCommand && double.TryParse(args[0], out double dayNum))
             {
-                args = new string[2] { "runpuzzle", $"{dayNum}" };
+                args = ["runpuzzle", $"{dayNum}"];
             }
 
             return command.MakeCommand(args);
         }
 
-        private ICommandFactory FindRequestedCommand(string requestedCommand)
+        private ICommandFactory? FindRequestedCommand(string requestedCommand)
         {
-            ICommandFactory cmd = null;
+            ICommandFactory? cmd = null;
             var matched = commands.Where(c =>
-                        c.CommandName.ToLower().StartsWith(requestedCommand.ToLower())
-                        || c.CommandAlternates.Any(ca => ca.ToLower().StartsWith(requestedCommand.ToLower())));
+                        c.CommandName.StartsWith(requestedCommand, StringComparison.CurrentCultureIgnoreCase)
+                        || c.CommandAlternates.Any(ca => ca.StartsWith(requestedCommand, StringComparison.CurrentCultureIgnoreCase)));
 
             if (!matched.Any() && double.TryParse(requestedCommand, out double dayNum))
             {
-                matched = commands.Where(c => c.CommandName.ToLower().StartsWith("runpuzzle"));
+                matched = commands.Where(c => c.CommandName.StartsWith("runpuzzle", StringComparison.CurrentCultureIgnoreCase));
             }
 
             if (matched.Any())
@@ -45,10 +40,11 @@
                 {
                     var msg = "Please Be More Specific." +
                               "\nDid you mean one of these?";
-                    foreach (var c in matched)
-                        msg += $"\n{c.CommandName.PadRight(25)}-{c.Description}";
 
-                    cmd = new BadCommand(msg);
+                    foreach (var c in matched)
+                        msg += $"\n=> {c.CommandName,-25}-{c.Description}";
+
+                    cmd = new BadCommand(msg, new BadCommand(msg, new NotFoundCommand()));
                 }
             }
 

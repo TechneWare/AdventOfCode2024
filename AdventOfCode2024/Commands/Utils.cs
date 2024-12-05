@@ -1,4 +1,7 @@
 ﻿using AdventOfCode2024.Puzzles;
+using Spectre.Console;
+using System.Security.Cryptography;
+using System.Xml.Linq;
 
 namespace AdventOfCode2024.Commands
 {
@@ -33,19 +36,61 @@ namespace AdventOfCode2024.Commands
         }
         public static void PrintUsage(IEnumerable<ICommandFactory> availableCommands)
         {
-            Console.WriteLine("\nUsage: commandName Arguments");
-            Console.WriteLine("Commands:");
+            AnsiConsole.MarkupLine("\n[bold yellow]Usage:[/] [italic][[Command Name]] [[Arguments]][/]");
+
+            var t = new Table()
+            .Title($"[bold yellow on blue]Available Commands[/]")
+            .AddColumns(
+                "[bold yellow]Command[/]",
+                "[bold yellow]Alternates[/]",
+                "[bold yellow]Arguments[/]",
+                "[bold yellow]Description[/]")
+            .RoundedBorder()
+            .BorderColor(Color.LightSlateBlue);
+
             foreach (var command in availableCommands)
             {
                 string alts = "";
-                if (command.CommandAlternates.Any())
-                    foreach (var altCommand in command.CommandAlternates)
-                        alts += $" | {altCommand}";
+                if (command.CommandAlternates.Length != 0)
+                    alts = string.Join(" | ", command.CommandAlternates);
 
-                Console.Write($"{command.CommandName}{alts} {command.CommandArgs}".PadRight(35));
-                Console.WriteLine($"-{command.Description}");
+                var args = command.CommandArgs.Replace("[", "[[").Replace("]", "]]");
+                var desc = command.Description.Replace("[", "[[").Replace("]", "]]");
+                alts = alts.Replace("[", "[[").Replace("]", "]]");
+
+                t.AddRow(command.CommandName, alts, args, desc);
             }
-            Console.WriteLine();
+            AnsiConsole.Write(t);
+            AnsiConsole.MarkupLine("[dim italic]You can also run a command by typeing the first letter(s) that uniquely identify that command[/]");
+            AnsiConsole.MarkupLine("[dim italic]EG: 'L' will match 'List', 'Q' will match 'Quit'[/]");
+        }
+        public static void PrintCommandUsage(ICommandFactory command)
+        {
+            var t = new Table()
+            .AddColumns(
+                "[bold yellow]Command[/]",
+                "[bold yellow]Alternates[/]",
+                "[bold yellow]Arguments[/]",
+                "[bold yellow]Description[/]")
+            .RoundedBorder()
+            .BorderColor(Color.LightSlateBlue);
+
+            string alts = "";
+            string ext = "";
+
+            if (command.CommandAlternates.Length != 0)
+                alts = string.Join(" | ", command.CommandAlternates);
+
+            if (!string.IsNullOrEmpty(command.ExtendedDescription))
+                ext = $"\n{command.ExtendedDescription}";
+
+            var args = command.CommandArgs.Replace("[", "[[").Replace("]", "]]");
+            var desc = $"{command.Description}{ext}".Replace("[", "[[").Replace("]", "]]");
+            alts = alts.Replace("[", "[[").Replace("]", "]]");
+
+            t.AddRow(command.CommandName, alts, args, desc);
+
+            AnsiConsole.Write(t);
         }
     }
 }

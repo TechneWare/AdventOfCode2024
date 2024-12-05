@@ -6,9 +6,10 @@
 
         public string CommandArgs => "";
 
-        public string[] CommandAlternates => new string[] { "all" };
+        public string[] CommandAlternates => ["all"];
 
         public string Description => "Run All Puzzles";
+        public string ExtendedDescription => "Runs All Known Puzzles in sequence";
         public ICommand MakeCommand(string[] args)
         {
             return new RunAllCommand();

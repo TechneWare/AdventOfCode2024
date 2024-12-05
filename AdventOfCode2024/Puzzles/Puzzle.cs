@@ -135,7 +135,7 @@ namespace AdventOfCode2024.Puzzles
             if (File.Exists(fileName))
                 DataRaw = File.ReadAllText(fileName);
             else
-                Console.WriteLine($"Required Input File Missing:\n{fileName}");
+                AnsiConsole.MarkupLineInterpolated($"[bold yellow]Required Input File Missing: [/]\n[italic]{fileName}[/]");
         }
 
         public abstract void ParseData();

@@ -1,28 +1,34 @@
-﻿namespace AdventOfCode2024.Commands
+﻿using Spectre.Console;
+
+namespace AdventOfCode2024.Commands
 {
     internal class BadCommand : ICommand, ICommandFactory
     {
         public string Message { get; set; }
+        public ICommand SourceCommand { get; }
 
         public string CommandName => "BadCommand";
 
         public string CommandArgs => "";
 
-        public string[] CommandAlternates => new string[] { };
+        public string[] CommandAlternates => [];
 
         public string Description => "Internal: Used for bad commands";
         public bool WithLogging { get; set; } = false;
 
+        public string ExtendedDescription => "";
 
-        public BadCommand() { Message = ""; }
-        public BadCommand(string message)
+        public BadCommand() { Message = ""; SourceCommand = null; }
+        public BadCommand(string message, ICommand sourceCommand)
         {
             Message = message;
+            SourceCommand = sourceCommand;
         }
 
         public void Run()
         {
-            Console.WriteLine($"Bad Command=> {Message}");
+            AnsiConsole.MarkupLine("[bold red rapidblink]===> Bad Command <===[/]");
+            AnsiConsole.MarkupLineInterpolated($"[italic bold yellow]{Message}[/]");
         }
 
         public ICommand MakeCommand(string[] args)

@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using Spectre.Console;
 using Console = Colorful.Console;
 
 namespace AdventOfCode2024.Commands
@@ -12,8 +12,9 @@ namespace AdventOfCode2024.Commands
         public string[] CommandAlternates => [];
 
         public string Description => "Displays the Welcome Message";
-
+        public string ExtendedDescription => "";
         public bool WithLogging { get; set; }
+
         public ICommand MakeCommand(string[] args)
         {
             return new WelcomeCommand();
@@ -21,11 +22,12 @@ namespace AdventOfCode2024.Commands
 
         public void Run()
         {
-            Console.WriteAscii("-----------------------", Color.White);
-            Console.WriteAscii("Advent Of Code 2024", Color.Yellow);
-            Console.WriteAscii("-----------------------", Color.White);
-            Console.WriteLine("- By Brian Wham", Color.Yellow);
-            Console.WriteLine("- https://github.com/TechneWare", Color.Yellow);
+            Console.WriteAscii("-----------------------", System.Drawing.Color.White);
+            Console.WriteAscii("Advent Of Code 2024", System.Drawing.Color.Yellow);
+            Console.WriteAscii("-----------------------", System.Drawing.Color.White);
+            
+            AnsiConsole.MarkupLine("[bold green]- By Brian Wham[/]");
+            AnsiConsole.MarkupLine("[underline italic dim link=https://github.com/TechneWare/AdventOfCode2024]https://github.com/TechneWare[/]");
             Console.WriteLine();
         }
     }

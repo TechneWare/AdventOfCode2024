@@ -6,6 +6,7 @@
         string CommandArgs { get; }
         string[] CommandAlternates { get; }
         string Description { get; }
+        string ExtendedDescription { get; }
         ICommand MakeCommand(string[] args);
     }
 }
