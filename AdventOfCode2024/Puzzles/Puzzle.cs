@@ -54,14 +54,14 @@ namespace AdventOfCode2024.Puzzles
                 var table = GetFullDayTable();
                 AnsiConsole.Progress()
                 .AutoClear(true)
-                .Columns(new ProgressColumn[]
-                {
+                .Columns(
+                [
                 new SpinnerColumn(),
                 new RemainingTimeColumn(),
                 new TaskDescriptionColumn(),
                 new ProgressBarColumn(),
                 new PercentageColumn(),
-                })
+                ])
                 .Start(ctx =>
                 {
                     var taskMain = ctx.AddTask($"[green]Executing Day {dayNumber}[/]");
@@ -195,7 +195,7 @@ namespace AdventOfCode2024.Puzzles
                 DisplayWithMoreCommand("\n" + puzzleText);
             }
         }
-        private void DisplayWithMoreCommand(string text)
+        private static void DisplayWithMoreCommand(string text)
         {
             int consoleWidth = Console.WindowWidth;
             int consoleHeight = Console.WindowHeight - 3;
@@ -268,7 +268,7 @@ namespace AdventOfCode2024.Puzzles
                 currentPage++;
             }
         }
-        private void ClearLineFromCursorToEnd()
+        private static void ClearLineFromCursorToEnd()
         {
             int currentLineCursor = Console.CursorTop;
             int currentColumnCursor = Console.CursorLeft;
@@ -278,9 +278,9 @@ namespace AdventOfCode2024.Puzzles
 
             Console.SetCursorPosition(currentColumnCursor, currentLineCursor);
         }
-        private string WrapText(string text, int consoleWidth)
+        private static string WrapText(string text, int consoleWidth)
         {
-            string[] words = text.Replace("\r", "").Replace("\n", " [NEW_LINE] ").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] words = text.Replace("\r", "").Replace("\n", " [NEW_LINE] ").Split([' '], StringSplitOptions.RemoveEmptyEntries);
             string result = "";
             string line = "";
 
@@ -315,15 +315,16 @@ namespace AdventOfCode2024.Puzzles
             .RoundedBorder()
             .BorderColor(Spectre.Console.Color.LightSlateBlue);
         }
-        private void AddDayRow(Table table, string partNum, string resultValue, bool mode, double duration)
+        private static void AddDayRow(Table table, string partNum, string resultValue, bool mode, double duration)
         {
-            table.AddRow(new Text[] {
+            table.AddRow(
                 new Text(partNum).Centered(),
                 new Text($"{(mode ? "Test" : "Actual")}").LeftJustified(),
-                new Text($"{resultValue}").LeftJustified(),
-                new Text($"{duration:F5} ms").RightJustified() });
+                new Markup($"{resultValue}").LeftJustified(),
+                new Text($"{duration:F5} ms").RightJustified()
+                );
         }
-        private Table GetPartTable()
+        private static Table GetPartTable()
         {
             return new Table()
             .AddColumns(
@@ -333,12 +334,13 @@ namespace AdventOfCode2024.Puzzles
             .RoundedBorder()
             .BorderColor(Spectre.Console.Color.LightSlateBlue);
         }
-        private void AddPartRow(Table table, string resultValue, bool mode, double duration)
+        private static void AddPartRow(Table table, string resultValue, bool mode, double duration)
         {
-            table.AddRow(new Text[] {
+            table.AddRow(
                 new Text($"{(mode ? "Test" : "Actual")}").LeftJustified(),
-                new Text($"{resultValue}").LeftJustified(),
-                new Text($"{duration:F5} ms").RightJustified() });
+                new Markup($"{resultValue}").LeftJustified(),
+                new Text($"{duration:F5} ms").RightJustified()
+                );
         }
     }
 }
