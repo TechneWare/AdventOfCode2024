@@ -66,25 +66,33 @@ namespace AdventOfCode2024.Puzzles
 
         public override void Part2(bool isTestMode)
         {
-
-            var answer = "";
-            ParseData();
-
-            var loops = GetLoops(startRow, startCol, CopyGrid(grid));
-
-            if (isTestMode)
+            if (!isTestMode && SysInfo.ProcessorCount < 4 || SysInfo.TotalMemoryMB < 16384)
             {
-                foreach (var loop in loops)
-                    answer += GetGridDisplayWithLoop(loop.objRow, loop.objCol, loop.grid);
+                Part2Result =
+                    $"Part2 Actual Skippped" +
+                    $"Your system does not have at least 4 CPUs and 16Gig of ram\n" +
+                    $"You have {SysInfo.ProcessorCount} CPUs and {SysInfo.TotalMemoryMB} MB of Ram";
             }
+            else
+            {
 
-            var numLoops = loops.Count;
-            answer += $"[dim]Objstruction Positions[/] = [bold yellow]{numLoops}[/]\n";
+                var answer = "";
+                ParseData();
 
-            Part2Result = answer;
+                var loops = GetLoops(startRow, startCol, CopyGrid(grid));
 
+                if (isTestMode)
+                {
+                    foreach (var loop in loops)
+                        answer += GetGridDisplayWithLoop(loop.objRow, loop.objCol, loop.grid);
+                }
+
+                var numLoops = loops.Count;
+                answer += $"[dim]Objstruction Positions[/] = [bold yellow]{numLoops}[/]\n";
+
+                Part2Result = answer;
+            }
         }
-
         private static int GetVisitedPositionsCount(char[,] g)
         {
             return GetVisitedPositions(g).Count;

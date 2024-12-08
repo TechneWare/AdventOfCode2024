@@ -9,15 +9,18 @@ namespace AdventOfCode2024
     {
         static void Main(string[] args)
         {
+
             var availableCommands = Utils.GetAvailableCommands();
             var parser = new CommandParser(availableCommands);
 
             parser.ParseCommand(["Cls"]).Run();
+            parser.ParseCommand(["Sysinfo"]).Run();
             parser.ParseCommand(["Welcome"]).Run();
 
             Settings.ShowPuzzleText = !Debugger.IsAttached;
             parser.ParseCommand(["RunPuzzle", "Last"]).Run();
             Settings.ShowPuzzleText = false;
+
 
             ICommand? lastCommand = null;
             do
