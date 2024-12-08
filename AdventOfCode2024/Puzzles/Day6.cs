@@ -66,10 +66,10 @@ namespace AdventOfCode2024.Puzzles
 
         public override void Part2(bool isTestMode)
         {
-            if (!isTestMode && SysInfo.ProcessorCount < 4 || SysInfo.TotalMemoryMB < 16384)
+            if (!isTestMode && (SysInfo.ProcessorCount < 4 || SysInfo.TotalMemoryMB < 16384))
             {
                 Part2Result =
-                    $"Part2 Actual Skippped" +
+                    $"Part2 Actual Skippped\n" +
                     $"Your system does not have at least 4 CPUs and 16Gig of ram\n" +
                     $"You have {SysInfo.ProcessorCount} CPUs and {SysInfo.TotalMemoryMB} MB of Ram";
             }
