@@ -22,12 +22,22 @@ namespace AdventOfCode2024.Commands
 
         public void Run()
         {
-            Console.WriteAscii("-----------------------", System.Drawing.Color.White);
-            Console.WriteAscii("Advent Of Code 2024", System.Drawing.Color.Yellow);
-            Console.WriteAscii("-----------------------", System.Drawing.Color.White);
-            
-            AnsiConsole.MarkupLine("[bold green]- By Brian Wham[/]");
-            AnsiConsole.MarkupLine("[underline italic dim link=https://github.com/TechneWare/AdventOfCode2024]https://github.com/TechneWare[/]");
+            var table = new Table()
+                .AddColumn(new TableColumn(""))
+                .HideHeaders()
+                .Expand()
+                .Border(TableBorder.None);
+
+            var panel = new Panel(new FigletText("Advent Of Code 2024")
+                                 .Centered().Color(Spectre.Console.Color.Teal))
+                .SquareBorder()
+                .Expand()
+                .BorderColor(Spectre.Console.Color.LightSkyBlue1);
+
+            table.AddRow(panel);
+            table.AddRow(new Markup("[green]-- By Brian Wham[/]"));
+            table.AddRow(new Markup("[green]--[/] [italic dim link=https://github.com/TechneWare/AdventOfCode2024]https://github.com/TechneWare[/]"));
+            AnsiConsole.Write(table);
             Console.WriteLine();
         }
     }
